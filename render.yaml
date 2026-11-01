@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: booknest-api
+    runtime: node
+    region: singapore
+    plan: free
+    rootDir: server
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: CLIENT_URL
+        value: https://booknest-web.onrender.com
+
+  - type: web
+    name: booknest-web
+    runtime: static
+    region: singapore
+    rootDir: client
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://booknest-api.onrender.com/api
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

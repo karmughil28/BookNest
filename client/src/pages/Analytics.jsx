@@ -1,0 +1,10 @@
+import { useEffect, useState } from 'react';
+import { ChartNoAxesCombined, BookOpen, Users, Layers3 } from 'lucide-react';
+import api, { getErrorMessage } from '../services/api';
+export default function Analytics() {
+  const [data, setData] = useState(null); const [error, setError] = useState('');
+  useEffect(() => { api.get('/dashboard/overview').then(({ data: result }) => setData(result)).catch((err) => setError(getErrorMessage(err))); }, []);
+  const stats = data?.stats || {}; const categories = data?.categories || []; const max = Math.max(1, ...categories.map((item) => item.count));
+  return <div className="management-page"><div className="page-intro-row"><div><span className="eyebrow">NUMBERS WITH A STORY</span><h2>A clearer view of your library.</h2><p>A quick look at the collection and the community around it.</p></div><div className="analytics-mark"><ChartNoAxesCombined size={24} /></div></div>{error && <div className="inline-error">{error}</div>}<div className="analytics-summary"><Metric icon={BookOpen} label="Book titles" value={stats.totalBooks ?? '—'} /><Metric icon={Users} label="Students" value={stats.totalStudents ?? '—'} /><Metric icon={Layers3} label="Available copies" value={stats.availableCopies ?? '—'} /></div><section className="panel chart-panel"><div className="panel-heading"><div><span className="eyebrow">COLLECTION MIX</span><h3>Books by category</h3></div><span className="chart-caption">TITLE COUNT</span></div>{categories.length ? <div className="bar-chart">{categories.map((item, index) => <div className="bar-row" key={item._id}><span>{item._id}</span><div className="bar-track"><div className={`bar-fill bar-${index % 4}`} style={{ width: `${Math.max(5, item.count / max * 100)}%` }} /></div><strong>{item.count}</strong></div>)}</div> : <div className="empty-mini"><BookOpen size={22} /><span>Add books to see your category breakdown.</span></div>}</section></div>;
+}
+function Metric({ icon: Icon, label, value }) { return <div className="analytics-metric"><div className="metric-icon"><Icon size={18} /></div><span>{label}</span><strong>{value}</strong></div>; }

@@ -1,0 +1,20 @@
+{
+  "name": "booknest-mern",
+  "version": "2.0.0",
+  "private": true,
+  "description": "BookNest Library Management System - React Vite, Express and MongoDB",
+  "scripts": {
+    "setup": "npm install && npm install --prefix server && npm install --prefix client",
+    "dev": "concurrently -n API,WEB -c blue,magenta \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "build": "npm run build --prefix client",
+    "start": "npm start --prefix server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "engines": {
+    "node": ">=20.18.0"
+  }
+}
